@@ -129,6 +129,20 @@
             <version>0.9.0</version>
             <scope>test</scope>
         </dependency>
+        
+        <!-- JMH for performance benchmarking -->
+        <dependency>
+            <groupId>org.openjdk.jmh</groupId>
+            <artifactId>jmh-core</artifactId>
+            <version>1.32</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.openjdk.jmh</groupId>
+            <artifactId>jmh-generator-annprocess</artifactId>
+            <version>1.32</version>
+            <scope>test</scope>
+        </dependency>
     </dependencies>
 
     <build>
@@ -149,6 +163,38 @@
                     </includes>
                 </configuration>
             </plugin>
+
         </plugins>
     </build>
+
+    <profiles>
+        <profile>
+            <id>performance-tests</id>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.openjdk.jmh</groupId>
+                        <artifactId>jmh-maven-plugin</artifactId>
+                        <version>1.32</version>
+                        <executions>
+                            <execution>
+                                <id>run-benchmarks</id>
+                                <phase>test</phase>
+                                <goals>
+                                    <goal>run</goal>
+                                </goals>
+                                <configuration>
+                                    <includes>
+                                        <include>.*Benchmark.*</include>
+                                    </includes>
+                                    <resultFormat>JSON</resultFormat>
+                                    <resultsFile>target/jmh-results.json</resultsFile>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+    </profiles>
 </project>

@@ -1,10 +1,13 @@
 package com.example.userauthentication.config;
 
 import io.micrometer.core.instrument.Counter;
+import io.micrometer.core.instrument.Gauge;
 import io.micrometer.core.instrument.MeterRegistry;
 import io.micrometer.core.instrument.Timer;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import com.zaxxer.hikari.HikariDataSource;
+import javax.sql.DataSource;
 
 /**
  * Configuration for custom metrics and monitoring.
@@ -153,5 +156,91 @@ public class MetricsConfig {
         return Counter.builder("auth.session.invalidation")
                 .description("Number of sessions invalidated")
                 .register(meterRegistry);
+    }
+
+    /**
+     * Timer for database operations.
+     */
+    @Bean
+    public Timer databaseOperationTimer(MeterRegistry meterRegistry) {
+        return Timer.builder("auth.database.operation.duration")
+                .description("Duration of database operations")
+                .register(meterRegistry);
+    }
+
+    /**
+     * Counter for authentication success rate.
+     */
+    @Bean
+    public Counter authenticationSuccessRateCounter(MeterRegistry meterRegistry) {
+        return Counter.builder("auth.success.rate")
+                .description("Authentication success rate counter")
+                .register(meterRegistry);
+    }
+
+    /**
+     * Counter for authentication failure rate.
+     */
+    @Bean
+    public Counter authenticationFailureRateCounter(MeterRegistry meterRegistry) {
+        return Counter.builder("auth.failure.rate")
+                .description("Authentication failure rate counter")
+                .register(meterRegistry);
+    }
+
+    /**
+     * Configure HikariCP connection pool metrics.
+     */
+    @Bean
+    public Gauge hikariConnectionPoolActiveConnections(MeterRegistry meterRegistry, DataSource dataSource) {
+        if (dataSource instanceof HikariDataSource hikariDataSource) {
+            return Gauge.builder("hikaricp.connections.active", hikariDataSource, 
+                    ds -> ds.getHikariPoolMXBean().getActiveConnections())
+                    .description("Active connections in HikariCP pool")
+                    .register(meterRegistry);
+        }
+        return null;
+    }
+
+    /**
+     * Configure HikariCP connection pool idle connections metric.
+     */
+    @Bean
+    public Gauge hikariConnectionPoolIdleConnections(MeterRegistry meterRegistry, DataSource dataSource) {
+        if (dataSource instanceof HikariDataSource hikariDataSource) {
+            return Gauge.builder("hikaricp.connections.idle", hikariDataSource,
+                    ds -> ds.getHikariPoolMXBean().getIdleConnections())
+                    .description("Idle connections in HikariCP pool")
+                    .register(meterRegistry);
+        }
+        return null;
+    }
+
+    /**
+     * Configure HikariCP connection pool total connections metric.
+     */
+    @Bean
+    public Gauge hikariConnectionPoolTotalConnections(MeterRegistry meterRegistry, DataSource dataSource) {
+        if (dataSource instanceof HikariDataSource hikariDataSource) {
+            return Gauge.builder("hikaricp.connections.total", hikariDataSource,
+                    ds -> ds.getHikariPoolMXBean().getTotalConnections())
+                    .description("Total connections in HikariCP pool")
+                    .register(meterRegistry);
+        }
+        return null;
+    }
+
+    /**
+     * Configure HikariCP connection pool pending threads metric.
+     */
+    @Bean
+    public Gauge hikariConnectionPoolPendingThreads(MeterRegistry meterRegistry, DataSource dataSource) {
+        if (dataSource instanceof HikariDataSource hikariDataSource) {
+            return Gauge.builder("hikaricp.connections.pending", hikariDataSource,
+                    ds -> ds.getHikariPoolMXBean().getThreadsAwaitingConnection())
+                    .description("Pending threads waiting for connections")
+                    .register(meterRegistry);
+        }
+        return null;
     }
 }

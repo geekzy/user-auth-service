@@ -2,6 +2,7 @@ package com.example.userauthentication.security;
 
 import com.example.userauthentication.model.User;
 import com.example.userauthentication.repository.UserRepository;
+import io.micrometer.core.annotation.Timed;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -25,6 +26,7 @@ public class CustomUserDetailsService implements UserDetailsService {
     }
 
     @Override
+    @Timed(value = "auth.user.details.load.time", description = "Time taken to load user details by username")
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
         User user = userRepository.findByEmail(email)
             .orElseThrow(() -> new UsernameNotFoundException("User not found with email: " + email));

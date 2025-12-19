@@ -3,6 +3,7 @@ package com.example.userauthentication.security;
 import com.example.userauthentication.config.SecurityProperties;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
+import io.micrometer.core.annotation.Timed;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -34,6 +35,7 @@ public class JwtTokenService {
     /**
      * Generate JWT token for authenticated user
      */
+    @Timed(value = "auth.jwt.token.generation.time", description = "Time taken to generate JWT token")
     public String generateToken(Long userId, String email) {
         Instant now = Instant.now();
         Instant expiration = now.plusMillis(securityProperties.getJwt().getExpiration());
@@ -51,6 +53,7 @@ public class JwtTokenService {
     /**
      * Generate refresh token with longer expiration
      */
+    @Timed(value = "auth.jwt.refresh.token.generation.time", description = "Time taken to generate JWT refresh token")
     public String generateRefreshToken(Long userId, String email) {
         Instant now = Instant.now();
         // Refresh token expires in 7 days
@@ -69,6 +72,7 @@ public class JwtTokenService {
     /**
      * Validate JWT token and extract claims
      */
+    @Timed(value = "auth.jwt.token.validation.time", description = "Time taken to validate JWT token")
     public JwtTokenInfo validateToken(String token) {
         try {
             // Check if token is blacklisted

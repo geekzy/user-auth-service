@@ -1,6 +1,7 @@
 package com.example.userauthentication.security;
 
 import com.example.userauthentication.config.SecurityProperties;
+import io.micrometer.core.annotation.Timed;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.cache.Cache;
@@ -32,6 +33,7 @@ public class RateLimitingService {
     /**
      * Check if the request is allowed based on rate limiting rules
      */
+    @Timed(value = "auth.rate.limit.check.time", description = "Time taken to check rate limiting rules")
     public boolean isAllowed(String key, int maxAttempts, int windowMinutes) {
         String rateLimitKey = "rate_limit:" + key;
         

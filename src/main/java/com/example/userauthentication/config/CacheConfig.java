@@ -25,7 +25,9 @@ public class CacheConfig {
         cacheManager.setCacheNames(java.util.Arrays.asList(
             "rateLimitCache",
             "sessionCache",
-            "userCache"
+            "userCache",
+            "users",           // For user entity caching
+            "userExists"       // For user existence checks
         ));
         
         // Allow dynamic cache creation

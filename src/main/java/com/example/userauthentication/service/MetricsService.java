@@ -25,6 +25,9 @@ public class MetricsService {
     private final Counter jwtTokenValidationCounter;
     private final Counter sessionCreationCounter;
     private final Counter sessionInvalidationCounter;
+    private final Timer databaseOperationTimer;
+    private final Counter authenticationSuccessRateCounter;
+    private final Counter authenticationFailureRateCounter;
 
     public MetricsService(Counter userRegistrationSuccessCounter,
                          Counter userRegistrationFailureCounter,
@@ -39,7 +42,10 @@ public class MetricsService {
                          Counter jwtTokenGenerationCounter,
                          Counter jwtTokenValidationCounter,
                          Counter sessionCreationCounter,
-                         Counter sessionInvalidationCounter) {
+                         Counter sessionInvalidationCounter,
+                         Timer databaseOperationTimer,
+                         Counter authenticationSuccessRateCounter,
+                         Counter authenticationFailureRateCounter) {
         this.userRegistrationSuccessCounter = userRegistrationSuccessCounter;
         this.userRegistrationFailureCounter = userRegistrationFailureCounter;
         this.loginSuccessCounter = loginSuccessCounter;
@@ -54,6 +60,9 @@ public class MetricsService {
         this.jwtTokenValidationCounter = jwtTokenValidationCounter;
         this.sessionCreationCounter = sessionCreationCounter;
         this.sessionInvalidationCounter = sessionInvalidationCounter;
+        this.databaseOperationTimer = databaseOperationTimer;
+        this.authenticationSuccessRateCounter = authenticationSuccessRateCounter;
+        this.authenticationFailureRateCounter = authenticationFailureRateCounter;
     }
 
     /**
@@ -152,5 +161,26 @@ public class MetricsService {
      */
     public Timer getPasswordHashingTimer() {
         return passwordHashingTimer;
+    }
+
+    /**
+     * Get the database operation timer for measuring database operation duration.
+     */
+    public Timer getDatabaseOperationTimer() {
+        return databaseOperationTimer;
+    }
+
+    /**
+     * Record authentication success for rate calculation.
+     */
+    public void recordAuthenticationSuccess() {
+        authenticationSuccessRateCounter.increment();
+    }
+
+    /**
+     * Record authentication failure for rate calculation.
+     */
+    public void recordAuthenticationFailure() {
+        authenticationFailureRateCounter.increment();
     }
 }
