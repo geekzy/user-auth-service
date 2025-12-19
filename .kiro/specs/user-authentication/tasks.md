@@ -82,7 +82,7 @@
     - Test rate limit reset and sliding window functionality
     - _Requirements: 5.4_
 
-- [ ] 4. Set up performance monitoring and metrics
+- [x] 4. Set up performance monitoring and metrics
   - [x] 4.1 Configure Micrometer and Actuator endpoints
     - Set up Micrometer with Prometheus registry for metrics collection
     - Configure Actuator endpoints for health checks and monitoring
@@ -95,28 +95,24 @@
     - Set up authentication success/failure rate metrics
     - _Requirements: 2.1, 2.2, 5.5_
 
-  - [ ] 4.3 Create performance test benchmarks
-    - Implement JMH benchmarks for critical authentication paths
-    - Add load testing scenarios for concurrent authentication
-    - Configure performance thresholds and alerts
-    - _Requirements: 2.1, 2.5, 5.4_
+
 
 - [x] 5. Checkpoint - Ensure all tests pass
   - Ensure all tests pass, ask the user if questions arise.
 
-- [ ] 6. Implement Spring Data JPA repositories
+- [x] 6. Implement Spring Data JPA repositories
   - [x] 6.1 Create UserRepository with custom queries
     - Implement JpaRepository with custom query methods
     - Add optimized queries for email lookup and login timestamp updates
     - Configure query performance monitoring and caching
     - _Requirements: 1.1, 1.2, 2.4_
 
-  - [ ]* 6.2 Write unit tests for user registration
+  - [x] 6.2 Write unit tests for user registration
     - Test successful user registration with valid credentials
     - Test registration validation and error handling
     - _Requirements: 1.1_
 
-  - [ ]* 6.3 Write unit tests for duplicate prevention
+  - [x] 6.3 Write unit tests for duplicate prevention
     - Test duplicate email detection and prevention
     - Test unique constraint enforcement and error handling
     - _Requirements: 1.2_
@@ -133,24 +129,24 @@
     - Configure async logging for performance
     - _Requirements: 3.4, 5.5_
 
-  - [ ]* 6.6 Write unit tests for audit logging
+  - [x] 6.6 Write unit tests for audit logging
     - Test security event logging and timestamp recording
     - Test log entry creation and retrieval functionality
     - _Requirements: 3.4, 5.5_
 
-- [ ] 7. Implement authentication service layer
-  - [ ] 7.1 Create UserService with registration functionality
+- [x] 7. Implement authentication service layer
+  - [x] 7.1 Create UserService with registration functionality
     - Implement @Service class with @Transactional methods
     - Add email validation, duplicate checking, and password encoding
     - Integrate with email service for verification
     - _Requirements: 1.1, 1.2, 1.3, 1.4, 1.5_
 
-  - [ ]* 7.2 Write unit tests for registration email
+  - [x] 7.2 Write unit tests for registration email
     - Test email verification sending and template rendering
     - Test email service integration and error handling
     - _Requirements: 1.5_
 
-  - [ ] 7.3 Create AuthenticationService with login functionality
+  - [x] 7.3 Create AuthenticationService with login functionality
     - Implement Spring Security authentication with custom logic
     - Add failed attempt tracking and account locking mechanisms
     - Integrate with JWT token generation and metrics
@@ -176,7 +172,7 @@
     - Test lockout duration and unlock mechanisms
     - _Requirements: 2.5_
 
-  - [ ] 7.8 Create SessionService with logout functionality
+  - [x] 7.8 Create SessionService with logout functionality
     - Implement session management with JWT blacklisting
     - Add audit logging and performance metrics
     - Configure async session cleanup
@@ -192,8 +188,8 @@
     - Test authentication filter behavior with invalid tokens
     - _Requirements: 3.3_
 
-- [ ] 8. Implement password reset functionality
-  - [ ] 8.1 Create PasswordResetService with request handling
+- [x] 8. Implement password reset functionality
+  - [x] 8.1 Create PasswordResetService with request handling
     - Implement @Service with secure token generation
     - Add silent handling for unregistered emails with consistent timing
     - Integrate with email service and rate limiting
@@ -209,7 +205,7 @@
     - Test consistent response timing and no information leakage
     - _Requirements: 4.2_
 
-  - [ ] 8.4 Create password reset completion functionality
+  - [x] 8.4 Create password reset completion functionality
     - Implement token validation and password update
     - Add @Transactional token invalidation after successful reset
     - Configure performance monitoring for reset operations
