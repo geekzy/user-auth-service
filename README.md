@@ -72,8 +72,17 @@ FLUSH PRIVILEGES;
 
 ### 2. Development Configuration
 
-For local development, create `src/main/resources/application-dev.properties` with your actual credentials:
+For local development, copy the template and fill in your actual credentials:
 
+```bash
+# Copy the template
+cp src/main/resources/application-dev.properties.template src/main/resources/application-dev.properties
+
+# Edit the file with your actual credentials
+# src/main/resources/application-dev.properties
+```
+
+Example configuration:
 ```properties
 # Database Configuration
 spring.datasource.url=jdbc:mariadb://localhost:3316/backendb

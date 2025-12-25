@@ -1,0 +1,16 @@
+# Development Environment Configuration Template
+# Copy this file to application-dev.properties and fill in your actual credentials
+# DO NOT commit application-dev.properties to version control
+
+# Database Configuration (MariaDB)
+spring.datasource.url=jdbc:mariadb://localhost:3316/backendb
+spring.datasource.username=root
+spring.datasource.password=your-db-password-here
+
+# Security Configuration
+app.security.jwt.secret=your-very-long-secure-secret-key-for-development-here
+
+# Email Configuration (Brevo/Sendinblue or your SMTP provider)
+spring.mail.username=your-smtp-username-here
+spring.mail.password=your-smtp-password-here
+app.email.from=Your Name <your-email@example.com>
