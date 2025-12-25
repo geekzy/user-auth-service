@@ -10,6 +10,14 @@ import jakarta.validation.constraints.*;
  */
 public class UserRegistrationRequest {
 
+    @NotBlank(message = "First name is required")
+    @Size(max = 50, message = "First name must not exceed 50 characters")
+    private String firstName;
+
+    @NotBlank(message = "Last name is required")
+    @Size(max = 50, message = "Last name must not exceed 50 characters")
+    private String lastName;
+
     @NotBlank(message = "Email is required")
     @Email(message = "Email must be valid", regexp = "^[A-Za-z0-9+_.-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}$")
     @Size(max = 255, message = "Email must not exceed 255 characters")
@@ -29,14 +37,41 @@ public class UserRegistrationRequest {
     // Default constructor
     public UserRegistrationRequest() {}
 
-    // Constructor
+    // Constructor with all fields
+    public UserRegistrationRequest(String firstName, String lastName, String email, String password, String confirmPassword) {
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.email = email;
+        this.password = password;
+        this.confirmPassword = confirmPassword;
+    }
+
+    // Backward compatibility constructor (for tests)
     public UserRegistrationRequest(String email, String password, String confirmPassword) {
+        this.firstName = "Test";
+        this.lastName = "User";
         this.email = email;
         this.password = password;
         this.confirmPassword = confirmPassword;
     }
 
     // Getters and Setters
+    public String getFirstName() {
+        return firstName;
+    }
+
+    public void setFirstName(String firstName) {
+        this.firstName = firstName;
+    }
+
+    public String getLastName() {
+        return lastName;
+    }
+
+    public void setLastName(String lastName) {
+        this.lastName = lastName;
+    }
+
     public String getEmail() {
         return email;
     }
@@ -72,7 +107,9 @@ public class UserRegistrationRequest {
     @Override
     public String toString() {
         return "UserRegistrationRequest{" +
-                "email='" + email + '\'' +
+                "firstName='" + firstName + '\'' +
+                ", lastName='" + lastName + '\'' +
+                ", email='" + email + '\'' +
                 ", password='[PROTECTED]'" +
                 ", confirmPassword='[PROTECTED]'" +
                 '}';

@@ -86,6 +86,13 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
             throws ServletException, IOException {
 
+        // Skip JWT processing for public endpoints
+        String requestPath = request.getRequestURI();
+        if (isPublicEndpoint(requestPath)) {
+            filterChain.doFilter(request, response);
+            return;
+        }
+
         Timer.Sample sample = Timer.start();
         String clientIp = getClientIpAddress(request);
         
@@ -251,5 +258,36 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         }
         
         return null;
+    }
+
+    /**
+     * Check if the request path is a public endpoint that doesn't require JWT processing
+     */
+    private boolean isPublicEndpoint(String requestPath) {
+        String[] publicPaths = {
+            "/",
+            "/auth/login",
+            "/auth/register",
+            "/auth/reset-password",
+            "/auth/reset-confirm",
+            "/api/auth/register",
+            "/api/auth/login",
+            "/api/auth/reset-request",
+            "/api/auth/reset-confirm",
+            "/css/",
+            "/js/",
+            "/images/",
+            "/actuator/",
+            "/h2-console/",
+            "/error"
+        };
+        
+        for (String publicPath : publicPaths) {
+            if (requestPath.equals(publicPath) || requestPath.startsWith(publicPath)) {
+                return true;
+            }
+        }
+        
+        return false;
     }
 }

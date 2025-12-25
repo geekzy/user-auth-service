@@ -18,8 +18,12 @@ const api = axios.create({
  */
 api.interceptors.request.use(
     (config) => {
-        // Add authentication token if available
-        if (window.authManager) {
+        // Skip auth headers for public endpoints
+        const publicEndpoints = ['/auth/login', '/auth/register', '/auth/reset-request', '/auth/reset-confirm'];
+        const isPublicEndpoint = publicEndpoints.some(endpoint => config.url.includes(endpoint));
+        
+        // Add authentication token if available and not a public endpoint
+        if (!isPublicEndpoint && window.authManager) {
             const authHeader = window.authManager.getAuthHeader();
             if (authHeader) {
                 config.headers.Authorization = authHeader;

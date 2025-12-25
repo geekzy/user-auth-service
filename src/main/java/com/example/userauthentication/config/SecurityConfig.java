@@ -87,22 +87,23 @@ public class SecurityConfig {
             
             // Configure authorization rules
             .authorizeHttpRequests(authz -> authz
-                // Public endpoints
+                // Public endpoints - order matters!
                 .requestMatchers(
+                    "/",
+                    "/auth/login",
+                    "/auth/register", 
+                    "/auth/reset-password",
+                    "/auth/reset-confirm",
                     "/api/auth/register",
                     "/api/auth/login", 
                     "/api/auth/reset-request",
                     "/api/auth/reset-confirm",
-                    "/auth/register",
-                    "/auth/login",
-                    "/auth/reset-password",
-                    "/auth/reset-confirm",
                     "/css/**",
                     "/js/**",
                     "/images/**",
                     "/actuator/**",
                     "/h2-console/**",
-                    "/"
+                    "/error"
                 ).permitAll()
                 
                 // Protected endpoints
@@ -119,7 +120,7 @@ public class SecurityConfig {
             // Configure form login for web interface
             .formLogin(form -> form
                 .loginPage("/auth/login")
-                .loginProcessingUrl("/auth/login")
+                .loginProcessingUrl("/auth/login-process")
                 .defaultSuccessUrl("/auth/dashboard", true)
                 .failureUrl("/auth/login?error=true")
                 .permitAll()
@@ -157,18 +158,24 @@ public class SecurityConfig {
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
         
-        // Allow specific origins in production, all origins in development
+        // Allow all origins in development
         configuration.setAllowedOriginPatterns(List.of("*"));
+        configuration.setAllowedOrigins(List.of("http://localhost:8080", "https://localhost:8080"));
         
-        // Allow specific HTTP methods
-        configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS"));
+        // Allow all HTTP methods
+        configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS", "HEAD", "PATCH"));
         
-        // Allow specific headers
-        configuration.setAllowedHeaders(Arrays.asList(
+        // Allow all headers
+        configuration.setAllowedHeaders(Arrays.asList("*"));
+        
+        // Expose common headers
+        configuration.setExposedHeaders(Arrays.asList(
             "Authorization", 
             "Content-Type", 
             "X-Requested-With",
-            "X-CSRF-TOKEN"
+            "X-CSRF-TOKEN",
+            "Access-Control-Allow-Origin",
+            "Access-Control-Allow-Credentials"
         ));
         
         // Allow credentials (cookies, authorization headers)

@@ -69,14 +69,9 @@ class App {
      * Initialize login page
      */
     initLoginPage() {
-        const loginForm = document.querySelector('form[action*="/auth/login"]');
-        
-        if (loginForm) {
-            loginForm.addEventListener('submit', async (e) => {
-                e.preventDefault();
-                await this.handleLogin(e.target);
-            });
-        }
+        // Completely disable any JavaScript form handling for login
+        // Let Spring Security handle the form submission natively
+        console.log('Login page initialized - using native form submission');
         
         // Check if user is already authenticated
         if (window.authManager && window.authManager.isAuthenticated()) {
@@ -174,6 +169,8 @@ class App {
     async handleRegister(form) {
         const formData = new FormData(form);
         const userData = {
+            firstName: formData.get('firstName'),
+            lastName: formData.get('lastName'),
             email: formData.get('email'),
             password: formData.get('password'),
             confirmPassword: formData.get('confirmPassword')
@@ -355,11 +352,9 @@ class App {
      * Initialize dashboard page
      */
     initDashboardPage() {
-        // Check authentication
-        if (window.authManager && !window.authManager.isAuthenticated()) {
-            window.location.href = '/auth/login';
-            return;
-        }
+        // Skip JavaScript authentication check - we're using Spring Security web sessions
+        // The server-side authentication is already handled by Spring Security
+        console.log('Dashboard page initialized - using Spring Security web session authentication');
         
         // Set up logout handlers
         const logoutButtons = document.querySelectorAll('button[type="submit"]');

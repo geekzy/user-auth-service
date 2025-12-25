@@ -57,6 +57,8 @@ class UserServiceTest {
     void shouldRegisterUserWithValidCredentials() {
         // Given
         UserRegistrationRequest request = new UserRegistrationRequest(
+            "John",
+            "Doe",
             "test@example.com", 
             "StrongPass123!", 
             "StrongPass123!"
@@ -89,6 +91,8 @@ class UserServiceTest {
     void shouldThrowExceptionWhenEmailAlreadyExists() {
         // Given
         UserRegistrationRequest request = new UserRegistrationRequest(
+            "Jane",
+            "Smith",
             "existing@example.com", 
             "StrongPass123!", 
             "StrongPass123!"
@@ -111,6 +115,8 @@ class UserServiceTest {
     void shouldThrowExceptionForWeakPassword() {
         // Given
         UserRegistrationRequest request = new UserRegistrationRequest(
+            "Test",
+            "User",
             "test@example.com", 
             "weak", 
             "weak"

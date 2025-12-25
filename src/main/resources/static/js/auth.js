@@ -20,8 +20,10 @@ class AuthManager {
      * Initialize authentication manager
      */
     init() {
-        // Check token validity on page load
-        this.validateCurrentToken();
+        // Check token validity on page load (skip for public pages)
+        if (!this.isPublicPage()) {
+            this.validateCurrentToken();
+        }
         
         // Set up periodic token validation
         this.startTokenValidation();
@@ -35,7 +37,7 @@ class AuthManager {
         
         // Listen for page visibility changes to validate token
         document.addEventListener('visibilitychange', () => {
-            if (!document.hidden) {
+            if (!document.hidden && !this.isPublicPage()) {
                 this.validateCurrentToken();
             }
         });
@@ -99,6 +101,24 @@ class AuthManager {
     }
     
     /**
+     * Check if current page is a public page (no authentication required)
+     * @returns {boolean} True if public page
+     */
+    isPublicPage() {
+        const path = window.location.pathname;
+        const publicPaths = [
+            '/auth/login',
+            '/auth/register', 
+            '/auth/reset-password',
+            '/auth/reset-confirm',
+            '/',
+            '/home'
+        ];
+        
+        return publicPaths.some(publicPath => path.includes(publicPath));
+    }
+    
+    /**
      * Check if token is expired
      * @param {string} token - JWT token
      * @returns {boolean} True if expired
@@ -139,6 +159,11 @@ class AuthManager {
      * Validate current token and handle expiration
      */
     async validateCurrentToken() {
+        // Skip validation on public pages
+        if (this.isPublicPage()) {
+            return;
+        }
+        
         const token = this.getToken();
         
         if (!token) {
@@ -223,6 +248,11 @@ class AuthManager {
         // Clear existing interval
         if (this.tokenCheckInterval) {
             clearInterval(this.tokenCheckInterval);
+        }
+        
+        // Don't start validation on public pages
+        if (this.isPublicPage()) {
+            return;
         }
         
         // Check token every 5 minutes

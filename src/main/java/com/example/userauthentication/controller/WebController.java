@@ -118,6 +118,17 @@ public class WebController {
         model.addAttribute("loginRequest", new LoginRequest());
         return "auth/login";
     }
+
+    /**
+     * Handle login form submission.
+     * This is handled by Spring Security, but we can add custom logic here if needed.
+     */
+    @PostMapping("/login")
+    public String processLogin() {
+        // This method won't be called directly as Spring Security intercepts the POST
+        // But having it here ensures proper mapping and can be used for custom logic
+        return "redirect:/auth/dashboard";
+    }
     /**
      * Display password reset request page.
      * 
