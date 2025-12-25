@@ -222,15 +222,7 @@
     <!-- Bootstrap JS -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     
-    <!-- Axios for API calls -->
-    <script src="https://cdn.jsdelivr.net/npm/axios@1.6.0/dist/axios.min.js"></script>
-    
-    <!-- Authentication State Management -->
-    <script th:src="@{/js/auth.js}"></script>
-    <script th:src="@{/js/api.js}"></script>
-    <script th:src="@{/js/app.js}"></script>
-    
-    <!-- Custom JavaScript -->
+    <!-- Custom JavaScript for Dashboard -->
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             // Update last login time
@@ -239,6 +231,17 @@
                 const now = new Date();
                 lastLoginElement.textContent = now.toLocaleString();
             }
+            
+            // Handle logout form submission
+            const logoutForms = document.querySelectorAll('form[action*="/logout"]');
+            logoutForms.forEach(form => {
+                form.addEventListener('submit', function(e) {
+                    // Let the form submit naturally - Spring Security will handle it
+                    console.log('Logging out via Spring Security...');
+                });
+            });
+            
+            console.log('Dashboard loaded successfully with Spring Security authentication');
         });
     </script>
 </body>

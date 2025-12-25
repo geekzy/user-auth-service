@@ -70,23 +70,26 @@ GRANT ALL PRIVILEGES ON user_auth_db.* TO 'auth_user'@'localhost';
 FLUSH PRIVILEGES;
 ```
 
-### 2. Configuration
+### 2. Development Configuration
 
-Update `src/main/resources/application.properties` with your settings:
+For local development, create `src/main/resources/application-dev.properties` with your actual credentials:
 
 ```properties
-# Database
-spring.datasource.url=jdbc:mariadb://localhost:3306/user_auth_db
-spring.datasource.username=auth_user
-spring.datasource.password=auth_password
+# Database Configuration
+spring.datasource.url=jdbc:mariadb://localhost:3316/backendb
+spring.datasource.username=root
+spring.datasource.password=your-db-password
 
-# Email (required for registration and password reset)
-spring.mail.username=your-email@gmail.com
-spring.mail.password=your-app-password
+# Security Configuration
+app.security.jwt.secret=your-very-long-secure-secret-key-here
 
-# JWT Secret (change in production)
-app.security.jwt.secret=your-secure-secret-key-here
+# Email Configuration (Brevo/Sendinblue or your SMTP provider)
+spring.mail.username=your-smtp-username
+spring.mail.password=your-smtp-password
+app.email.from=Your Name <your-email@example.com>
 ```
+
+**Note**: The `application-dev.properties` file is excluded from version control for security.
 
 ### 3. Run the Application
 
@@ -95,15 +98,31 @@ app.security.jwt.secret=your-secure-secret-key-here
 git clone <repository-url>
 cd user-auth-service
 
-# Run with Maven
-mvn spring-boot:run
+# Run with development profile
+mvn spring-boot:run -Dspring-boot.run.profiles=dev
 
 # Or build and run JAR
 mvn clean package
-java -jar target/user-auth-service-0.0.1-SNAPSHOT.jar
+java -jar target/user-auth-service-0.0.1-SNAPSHOT.jar --spring.profiles.active=dev
 ```
 
 The application will start on `http://localhost:8080`
+
+### 4. Environment Variables (Alternative)
+
+Instead of creating `application-dev.properties`, you can set environment variables:
+
+```bash
+export DATABASE_URL=jdbc:mariadb://localhost:3316/backendb
+export DATABASE_USERNAME=root
+export DATABASE_PASSWORD=your-db-password
+export JWT_SECRET=your-very-long-secure-secret-key-here
+export SMTP_USERNAME=your-smtp-username
+export SMTP_PASSWORD=your-smtp-password
+export EMAIL_FROM="Your Name <your-email@example.com>"
+
+mvn spring-boot:run
+```
 
 ## 📚 API Documentation
 
