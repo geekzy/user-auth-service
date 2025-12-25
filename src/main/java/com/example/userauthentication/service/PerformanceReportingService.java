@@ -23,9 +23,9 @@ public class PerformanceReportingService {
     }
 
     /**
-     * Log performance summary every 5 minutes.
+     * Log performance summary every minute (for development POC).
      */
-    @Scheduled(fixedRate = 300000) // 5 minutes
+    @Scheduled(fixedRate = 60000) // 1 minute
     public void logPerformanceSummary() {
         try {
             PerformanceMonitoringService.PerformanceSummary summary = 
@@ -57,19 +57,19 @@ public class PerformanceReportingService {
     }
 
     /**
-     * Perform detailed performance health check every hour.
+     * Perform detailed performance health check every minute (for development POC).
      */
-    @Scheduled(fixedRate = 3600000) // 1 hour
+    @Scheduled(fixedRate = 60000) // 1 minute
     public void performDetailedHealthCheck() {
         try {
             PerformanceMonitoringService.PerformanceSummary summary = 
                 performanceMonitoringService.getPerformanceSummary();
             
             logger.info("=== Detailed Performance Health Check ===");
-            logger.info("Authentication Success Rate: {:.2f}%", summary.getAuthenticationSuccessRate());
-            logger.info("Authentication Failure Rate: {:.2f}%", summary.getAuthenticationFailureRate());
-            logger.info("Average Authentication Time: {:.2f}ms", summary.getAverageAuthenticationTime());
-            logger.info("Database Connection Pool Utilization: {:.2f}%", summary.getConnectionPoolUtilization());
+            logger.info(String.format("Authentication Success Rate: %.2f%%", summary.getAuthenticationSuccessRate()));
+            logger.info(String.format("Authentication Failure Rate: %.2f%%", summary.getAuthenticationFailureRate()));
+            logger.info(String.format("Average Authentication Time: %.2fms", summary.getAverageAuthenticationTime()));
+            logger.info(String.format("Database Connection Pool Utilization: %.2f%%", summary.getConnectionPoolUtilization()));
             logger.info("Slow Operations Count: {}", summary.getSlowOperationCount());
             logger.info("Total Operations Count: {}", summary.getTotalOperationCount());
             logger.info("Overall Health Status: {}", summary.isHealthy() ? "HEALTHY" : "UNHEALTHY");

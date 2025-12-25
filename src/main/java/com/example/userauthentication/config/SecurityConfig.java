@@ -1,6 +1,9 @@
 package com.example.userauthentication.config;
 
 import com.example.userauthentication.security.JwtAuthenticationFilter;
+import com.example.userauthentication.security.JwtTokenService;
+import com.example.userauthentication.service.SessionService;
+import io.micrometer.core.instrument.MeterRegistry;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -30,14 +33,11 @@ public class SecurityConfig {
 
     private final SecurityProperties securityProperties;
     private final UserDetailsService userDetailsService;
-    private final JwtAuthenticationFilter jwtAuthenticationFilter;
 
     public SecurityConfig(SecurityProperties securityProperties, 
-                         UserDetailsService userDetailsService,
-                         JwtAuthenticationFilter jwtAuthenticationFilter) {
+                         UserDetailsService userDetailsService) {
         this.securityProperties = securityProperties;
         this.userDetailsService = userDetailsService;
-        this.jwtAuthenticationFilter = jwtAuthenticationFilter;
     }
 
     @Bean
@@ -59,7 +59,15 @@ public class SecurityConfig {
     }
 
     @Bean
-    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+    public JwtAuthenticationFilter jwtAuthenticationFilter(JwtTokenService jwtTokenService,
+                                                          UserDetailsService userDetailsService,
+                                                          SessionService sessionService,
+                                                          MeterRegistry meterRegistry) {
+        return new JwtAuthenticationFilter(jwtTokenService, userDetailsService, sessionService, meterRegistry);
+    }
+
+    @Bean
+    public SecurityFilterChain filterChain(HttpSecurity http, JwtAuthenticationFilter jwtAuthenticationFilter) throws Exception {
         http
             // Disable CSRF for API endpoints, enable for form-based endpoints
             .csrf(csrf -> csrf
@@ -93,8 +101,16 @@ public class SecurityConfig {
                     "/js/**",
                     "/images/**",
                     "/actuator/**",
-                    "/h2-console/**"
+                    "/h2-console/**",
+                    "/"
                 ).permitAll()
+                
+                // Protected endpoints
+                .requestMatchers(
+                    "/auth/dashboard",
+                    "/api/auth/session",
+                    "/api/auth/logout"
+                ).authenticated()
                 
                 // All other requests require authentication
                 .anyRequest().authenticated()
@@ -104,7 +120,7 @@ public class SecurityConfig {
             .formLogin(form -> form
                 .loginPage("/auth/login")
                 .loginProcessingUrl("/auth/login")
-                .defaultSuccessUrl("/dashboard", true)
+                .defaultSuccessUrl("/auth/dashboard", true)
                 .failureUrl("/auth/login?error=true")
                 .permitAll()
             )

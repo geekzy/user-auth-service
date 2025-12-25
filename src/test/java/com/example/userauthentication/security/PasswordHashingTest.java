@@ -33,7 +33,7 @@ class PasswordHashingTest {
         securityProperties.setPassword(password);
         
         // Create SecurityConfig and get password encoder
-        SecurityConfig securityConfig = new SecurityConfig(securityProperties, null, null);
+        SecurityConfig securityConfig = new SecurityConfig(securityProperties, null);
         passwordEncoder = securityConfig.passwordEncoder();
     }
 

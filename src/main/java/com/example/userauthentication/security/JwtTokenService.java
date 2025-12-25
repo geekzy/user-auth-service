@@ -135,6 +135,59 @@ public class JwtTokenService {
     }
 
     /**
+     * Extract email from token
+     */
+    public String extractEmailFromToken(String token) {
+        try {
+            Claims claims = Jwts.parser()
+                    .verifyWith(secretKey)
+                    .build()
+                    .parseSignedClaims(token)
+                    .getPayload();
+            
+            return claims.get("email", String.class);
+        } catch (Exception e) {
+            logger.debug("Could not extract email from token: {}", e.getMessage());
+            return null;
+        }
+    }
+
+    /**
+     * Extract expiration time from token
+     */
+    public LocalDateTime extractExpirationFromToken(String token) {
+        try {
+            Claims claims = Jwts.parser()
+                    .verifyWith(secretKey)
+                    .build()
+                    .parseSignedClaims(token)
+                    .getPayload();
+            
+            Date expiration = claims.getExpiration();
+            return LocalDateTime.ofInstant(expiration.toInstant(), ZoneId.systemDefault());
+        } catch (Exception e) {
+            logger.debug("Could not extract expiration from token: {}", e.getMessage());
+            return null;
+        }
+    }
+
+    /**
+     * Check if token is valid (not expired and not blacklisted)
+     */
+    public boolean isTokenValid(String token) {
+        if (token == null || token.trim().isEmpty()) {
+            return false;
+        }
+        
+        if (isTokenBlacklisted(token)) {
+            return false;
+        }
+        
+        JwtTokenInfo tokenInfo = validateToken(token);
+        return tokenInfo != null && !tokenInfo.isExpired();
+    }
+
+    /**
      * Blacklist a token (for logout functionality)
      */
     public void blacklistToken(String token) {

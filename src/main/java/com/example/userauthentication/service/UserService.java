@@ -38,6 +38,9 @@ public class UserService {
     private final Counter registrationSuccesses;
     private final Counter registrationFailures;
     private final SecureRandom secureRandom;
+    
+    @org.springframework.beans.factory.annotation.Value("${app.email.auto-verify-on-registration:false}")
+    private boolean autoVerifyOnRegistration;
 
     public UserService(UserRepository userRepository, 
                       PasswordEncoder passwordEncoder,
@@ -105,11 +108,20 @@ public class UserService {
             
             // Create and save user
             User user = createUser(request.getEmail(), request.getPassword());
+            
+            // Auto-verify email in development mode
+            if (autoVerifyOnRegistration) {
+                user.setEmailVerified(true);
+                logger.info("Auto-verifying email for development mode: {}", user.getEmail());
+            }
+            
             User savedUser = userRepository.save(user);
             
-            // Generate verification token and send email
-            String verificationToken = generateVerificationToken();
-            emailService.sendVerificationEmail(savedUser.getEmail(), verificationToken);
+            // Generate verification token and send email (only if not auto-verified)
+            if (!autoVerifyOnRegistration) {
+                String verificationToken = generateVerificationToken();
+                emailService.sendVerificationEmail(savedUser.getEmail(), verificationToken);
+            }
             
             registrationSuccesses.increment();
             logger.info("User registration successful for email: {} with ID: {}", 
